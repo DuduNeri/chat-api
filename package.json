@@ -1,0 +1,29 @@
+{
+  "name": "chat-api",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "repository": "https://github.com/DuduNeri/chat-api.git",
+  "author": "DuduNeri <nerimartinseduardo@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/dotenv": "^8.2.3",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.5.2",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  },
+  "scripts": {
+    "dev": "nodemon --exec ts-node src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "pg": "^8.16.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.7",
+    "socket.io": "^4.8.1"
+  }
+}
