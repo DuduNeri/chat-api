@@ -1,11 +1,9 @@
-import express, { Application } from "express";
+import express from "express";
+import userRoutes from "./routes/user.routes";
 
-const app: Application = express();
-
+const app = express();
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("API funcionando!");
-});
+app.use("/api", userRoutes);
 
 export default app;
