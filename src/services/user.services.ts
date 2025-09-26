@@ -22,4 +22,13 @@ export class UserService {
     const { password, ...safeUser } = newUser.toJSON();
     return safeUser as IUserResponse;
   }
+
+  async GetUserById(id: string): Promise<IUserResponse> {
+    const user = await User.findByPk(id);
+    if (!user) {
+      throw new Error("Erro ao buscar usuário");
+    }
+    return user.toJSON() as IUserResponse;
+  }
+
 }

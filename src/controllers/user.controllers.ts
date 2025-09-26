@@ -11,4 +11,8 @@ export class UserController {
   async create(data: ICreateUser): Promise<IUserResponse> {
     return await this.userService.createUser(data);
   }
+
+  async get(id: string) {
+    return await this.userService.GetUserById(id);
+  }
 }

@@ -161,6 +161,13 @@
     "@types/mime" "^1"
     "@types/node" "*"
 
+"@types/sequelize@^6.12.0":
+  version "6.12.0"
+  resolved "https://registry.yarnpkg.com/@types/sequelize/-/sequelize-6.12.0.tgz#91b3ab13830b90dbac3632c8e2adc071c7c5b527"
+  integrity sha512-rJRUf3AkP356HicHSjM2I7+d0FiLvOPZdDxFY0bhmKiZnGOuZZ1cUcDlPyyin9b3pYFvxZfJUTC3nGXLoi6DWA==
+  dependencies:
+    sequelize "*"
+
 "@types/serve-static@*":
   version "1.15.8"
   resolved "https://registry.yarnpkg.com/@types/serve-static/-/serve-static-1.15.8.tgz#8180c3fbe4a70e8f00b9f70b9ba7f08f35987877"
@@ -982,7 +989,7 @@ sequelize-pool@^7.1.0:
   resolved "https://registry.yarnpkg.com/sequelize-pool/-/sequelize-pool-7.1.0.tgz#210b391af4002762f823188fd6ecfc7413020768"
   integrity sha512-G9c0qlIWQSK29pR/5U2JF5dDQeqqHRragoyahj/Nx4KOOQ3CPPfzxnfqFPCSB7x5UgjOgnZ61nSxz+fjDpRlJg==
 
-sequelize@^6.37.7:
+sequelize@*, sequelize@^6.37.7:
   version "6.37.7"
   resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-6.37.7.tgz#55a6f8555ae76c1fbd4bce76b2ac5fcc0a1e6eb6"
   integrity sha512-mCnh83zuz7kQxxJirtFD7q6Huy6liPanI67BSlbzSYgVNl5eXVdE2CN1FuAeZwG1SNpGsNRCV+bJAVVnykZAFA==
