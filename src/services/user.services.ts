@@ -7,7 +7,7 @@ import {
 } from "../interfaces/user.interface";
 
 export class UserService {
-  async createUser(data: ICreateUser): Promise<IUserResponse> {
+  async CreateUser(data: ICreateUser): Promise<IUserResponse> {
     if (!data.name || !data.email || !data.password) {
       throw new Error("Todos os campos são obrigatórios");
     }
@@ -54,5 +54,30 @@ export class UserService {
 
     await user.destroy();
     return { message: "Usuário deletado com sucesso" };
+  }
+
+  async UpdateUser(id: string, data: Partial<IUser>): Promise<IUserResponse> {
+    const [affectedRows] = await User.update(
+      {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      },
+      {
+        where: { id },
+      }
+    );
+    if (affectedRows === 0) {
+      throw new Error("Erro ao atualizar usuário");
+    }
+
+    const updatedUser = await User.findByPk(id, {
+      attributes: { exclude: ["password"] },
+    });
+
+    if (!updatedUser) {
+      throw new Error("Usuário não encontrado após atualização");
+    }
+    return updatedUser.toJSON() as IUserResponse;
   }
 }
