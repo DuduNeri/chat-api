@@ -23,6 +23,15 @@ router.get("/:id", async (req: Request, res: Response) => {
    }
 })
 
+router.get("/", async (req: Request, res: Response) => {
+  try {
+    const users = await userController.getAll()
+    res.status(400).json(users)
+  } catch (error: any) {
+    res.status(400).json({ message: error.message})
+  }
+})
+
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

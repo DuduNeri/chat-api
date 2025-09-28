@@ -19,4 +19,8 @@ export class UserController {
   async dell(id: string){
     return await this.userService.DeleteUserById(id)
   }
+
+  async getAll(): Promise<IUserResponse[]>{
+    return await this.userService.GetAllUsers()
+  }
 }

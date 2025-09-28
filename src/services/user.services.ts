@@ -1,6 +1,10 @@
 import bcrypt from "bcrypt";
 import User from "../models/user.model";
-import { ICreateUser, IUserResponse } from "../interfaces/user.interface";
+import {
+  ICreateUser,
+  IUserResponse,
+  type IUser,
+} from "../interfaces/user.interface";
 
 export class UserService {
   async createUser(data: ICreateUser): Promise<IUserResponse> {
@@ -24,11 +28,21 @@ export class UserService {
   }
 
   async GetUserById(id: string): Promise<IUserResponse> {
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(id, {
+      attributes: { exclude: [`password`] },
+    });
     if (!user) {
       throw new Error("Erro ao buscar usuário");
     }
     return user.toJSON() as IUserResponse;
+  }
+
+  async GetAllUsers(): Promise<IUserResponse[]> {
+    const users = await User.findAll({
+      attributes: { exclude: [`password`] },
+    });
+
+    return users.map((user) => user.toJSON() as IUserResponse);
   }
 
   async DeleteUserById(id: string): Promise<{ message: string }> {
