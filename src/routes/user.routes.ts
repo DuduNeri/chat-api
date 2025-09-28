@@ -23,4 +23,14 @@ router.get("/:id", async (req: Request, res: Response) => {
    }
 })
 
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const user = await userController.dell(id);
+    res.status(201).json(user)
+  } catch (error: any) {
+    res.status(400).json({ message: error.message})
+  }
+})
+
 export default router;

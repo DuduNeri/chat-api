@@ -15,4 +15,8 @@ export class UserController {
   async get(id: string) {
     return await this.userService.GetUserById(id);
   }
+
+  async dell(id: string){
+    return await this.userService.DeleteUserById(id)
+  }
 }

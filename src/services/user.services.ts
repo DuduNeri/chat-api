@@ -16,7 +16,7 @@ export class UserService {
     const newUser = await User.create({
       name: data.name,
       email: data.email,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
     const { password, ...safeUser } = newUser.toJSON();
@@ -31,4 +31,14 @@ export class UserService {
     return user.toJSON() as IUserResponse;
   }
 
+  async DeleteUserById(id: string): Promise<{ message: string }> {
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      throw new Error("Usuário não encontrado");
+    }
+
+    await user.destroy();
+    return { message: "Usuário deletado com sucesso" };
+  }
 }
