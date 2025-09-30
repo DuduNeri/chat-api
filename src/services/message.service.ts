@@ -1,4 +1,4 @@
-import type { IMessage } from "../interfaces/message.interface";
+import type { IMessage, IMessageResponse } from "../interfaces/message.interface";
 import { Message } from "../models";
 
 export class MessageService {
@@ -7,5 +7,13 @@ export class MessageService {
       throw new Error("Todos os campos são obrigatórios");
     }
     return Message.create(data)
+  }
+
+  async GetMessage(id: string): Promise<IMessageResponse>{
+    const message = await Message.findByPk(id)
+    if(!message){
+      throw new Error("Erro ao buscar mensagens")
+    }
+    return message.toJSON() as IMessageResponse
   }
 }
