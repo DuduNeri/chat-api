@@ -57,27 +57,19 @@ export class UserService {
   }
 
   async UpdateUser(id: string, data: Partial<IUser>): Promise<IUserResponse> {
-    const [affectedRows] = await User.update(
-      {
-        name: data.name,
-        email: data.email,
-        password: data.password,
-      },
-      {
-        where: { id },
-      }
-    );
-    if (affectedRows === 0) {
-      throw new Error("Erro ao atualizar usuário");
+    const user = await User.findByPk(id);
+    if (!user) {
+      throw new Error("Usuário não encontrado");
     }
 
-    const updatedUser = await User.findByPk(id, {
-      attributes: { exclude: ["password"] },
-    });
-
-    if (!updatedUser) {
-      throw new Error("Usuário não encontrado após atualização");
+    let updatedData = { ...data };
+    if (data.password) {
+      updatedData.password = await bcrypt.hash(data.password, 10);
     }
-    return updatedUser.toJSON() as IUserResponse;
+
+    await user.update(updatedData);
+
+    const { password, ...safeUser } = user.toJSON();
+    return safeUser as IUserResponse;
   }
 }

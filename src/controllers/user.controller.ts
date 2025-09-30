@@ -1,5 +1,5 @@
 import { ICreateUser, IUserResponse, IUser } from "../interfaces/user.interface";
-import { UserService } from "../services/user.services";
+import { UserService } from "../services/user.service";
 
 export class UserController {
   private userService: UserService;
