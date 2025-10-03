@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 import User from "../models/user.model";
 import {
-  ICreateUser,
-  IUserResponse,
+  type ICreateUser,
+  type IUserResponse,
   type IUser,
 } from "../interfaces/user.interface";
 

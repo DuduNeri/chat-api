@@ -25,4 +25,12 @@ export class MessageController {
       throw new Error(`Erro ao buscar mensagem:${error.message}`);
     }
   }
+  
+  async deleteMessage(data: IMessageResponse){
+    try {
+     return await this.messageService.DeleteMessage(data);
+    } catch (error: any) {
+     throw new Error(`Erro ao excluir mensagem:${error.message}`)
+    }
+  }
 }

@@ -1,9 +1,7 @@
-// models/message.model.ts
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../config/db";
 import { IMessage } from "../interfaces/message.interface";
 
-// Aqui criamos um tipo para "criação" (id, createdAt e updatedAt são opcionais)
 export interface IMessageCreation extends Optional<IMessage, "id" | "createdAt" | "updatedAt"> {}
 
 class Message extends Model<IMessage, IMessageCreation> implements IMessage {
