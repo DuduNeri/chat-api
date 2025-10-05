@@ -33,11 +33,27 @@ export class ConversationService {
     return result!.toJSON() as IConversationResponse;
   }
 
-  /*
-  async getConversationsByUser(userId: string): Promise<IConversationResponse[]> {
-    // lógica aqui
-  }
+  async getConversationsByUser(
+    userId: string
+  ): Promise<IConversationResponse[]> {
+    const conversation = await Conversation.findAll({
+      include: [
+        {
+          model: User,
+          as: "participants",
+          where: { id: userId },
+          attributes: ["id", "name"],
+        },
+      ],
+    });
 
+    if (!conversation || conversation.length === 0) {
+      throw new Error("Nenhuma conversa encontrada para esse usuário");
+    }
+
+    return conversation.map((c) => c.toJSON() as IConversationResponse);
+  }
+  /*
   // Busca uma conversa por ID
   async getConversationById(conversationId: string): Promise<IConversationResponse> {
     // lógica aqui
