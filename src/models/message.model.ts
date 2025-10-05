@@ -1,14 +1,14 @@
-import { DataTypes, Model, Optional } from "sequelize";
+// src/models/Message.ts
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
-import { IMessage } from "../interfaces/message.interface";
+import User from "./user.model";
+import Conversation from "./conversation.model";
 
-export interface IMessageCreation extends Optional<IMessage, "id" | "createdAt" | "updatedAt"> {}
-
-class Message extends Model<IMessage, IMessageCreation> implements IMessage {
+class Message extends Model {
   public id!: string;
   public content!: string;
+  public conversationId!: string;
   public senderId!: string;
-  public receiverId!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -17,18 +17,18 @@ Message.init(
   {
     id: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
     },
     content: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    senderId: {
+    conversationId: {
       type: DataTypes.UUID,
       allowNull: false,
     },
-    receiverId: {
+    senderId: {
       type: DataTypes.UUID,
       allowNull: false,
     },
@@ -39,5 +39,11 @@ Message.init(
     timestamps: true,
   }
 );
+
+// Relacionamentos
+Message.belongsTo(User, { foreignKey: "senderId", as: "sender" });
+Message.belongsTo(Conversation, { foreignKey: "conversationId", as: "conversation" });
+
+Conversation.hasMany(Message, { foreignKey: "conversationId", as: "messages" });
 
 export default Message;
