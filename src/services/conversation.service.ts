@@ -53,20 +53,31 @@ export class ConversationService {
 
     return conversation.map((c) => c.toJSON() as IConversationResponse);
   }
-  /*
   // Busca uma conversa por ID
   async getConversationById(conversationId: string): Promise<IConversationResponse> {
-    // lógica aqui
-  }
+    const conversation = await Conversation.findByPk(conversationId);
+    if(!conversation){
+     throw new Error("Erro ao buscar conversa")
+    }
 
+    return conversation.toJSON() as IConversation;
+  }
   // Adiciona participante
   async addParticipant(conversationId: string, userId: string): Promise<void> {
-    // lógica aqui
+   const conversation = await Conversation.findByPk(conversationId);
+    const user = await User.findByPk(userId);
+
+    if (!conversation) throw new Error("Conversa não encontrada");
+    if (!user) throw new Error("Usuário não encontrado");
+
+    // 2️⃣ Adicionar o usuário à conversa
+    await (conversation as any).addParticipant(user); // método gerado automaticamente pelo Sequelize
+
+    console.log(`✅ Usuário ${userId} adicionado à conversa ${conversationId}`);
   }
 
   // Remove participante
   async removeParticipant(conversationId: string, userId: string): Promise<void> {
     // lógica aqui
   }
-  */
 }
