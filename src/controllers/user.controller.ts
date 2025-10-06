@@ -1,4 +1,8 @@
-import { ICreateUser, IUserResponse, IUser } from "../interfaces/user.interface";
+import {
+  ICreateUser,
+  IUserResponse,
+  IUser,
+} from "../interfaces/user.interface";
 import { UserService } from "../services/user.service";
 
 export class UserController {
@@ -7,7 +11,6 @@ export class UserController {
   constructor() {
     this.userService = new UserService();
   }
-
   async create(data: ICreateUser): Promise<IUserResponse> {
     try {
       return await this.userService.CreateUser(data);
@@ -44,7 +47,9 @@ export class UserController {
     try {
       return await this.userService.UpdateUser(id, data);
     } catch (error: any) {
-      throw new Error(`Erro ao atualizar usuário com id ${id}: ${error.message}`);
+      throw new Error(
+        `Erro ao atualizar usuário com id ${id}: ${error.message}`
+      );
     }
   }
 }

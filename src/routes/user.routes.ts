@@ -9,9 +9,7 @@ router.post("/users", async (req: Request, res: Response) => {
     const user = await userController.create(req.body);
     res.status(201).json(user);
   } catch (error: any) {
-    res.status(400).json({
-      message: error.message,
-    });
+    res.status(400).json({ message: error.message });
   }
 });
 

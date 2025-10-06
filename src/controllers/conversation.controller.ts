@@ -11,12 +11,35 @@ export class ConversationController {
     this.conversationService = new ConversationService();
   }
 
-async create(data: IConversation, participantIds: string[]): Promise<IConversationResponse> {
-  try {
-    return await this.conversationService.createConversation(data, participantIds);
-  } catch (error: any) {
-    throw new Error(`Erro ao criar sala: ${error.message}`);
+  async create(
+    data: IConversation,
+    participantIds: string[]
+  ): Promise<IConversationResponse> {
+    try {
+      console.log(data)
+      console.log(participantIds)
+      return await this.conversationService.createConversation(
+        data,
+        participantIds
+      );
+    } catch (error: any) {
+      throw new Error(`Erro ao criar sala: ${error.message}`);
+    }
   }
-}
 
+  async getByUser(userId: string): Promise<IConversationResponse[]>{
+    try {
+      return await this.conversationService.getConversationsByUser(userId)
+    } catch (error: any) {
+      throw new Error("Erro ao buscar conversas desse usuário")
+    }
+  }
+
+  async getByConversationId( conversationId: string): Promise<IConversationResponse>{
+    try {
+      return await this.conversationService.getConversationById(conversationId)
+    } catch (error: any) {
+       throw new Error("Erro ao buscar a conversa desse usuário")
+    }
+  }
 }
