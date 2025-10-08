@@ -5,6 +5,7 @@ import {
   IConversation,
   IConversationResponse,
 } from "../interfaces/conversation.interface";
+import { where } from "sequelize";
 
 export class ConversationService {
   async createConversation(
@@ -70,21 +71,13 @@ export class ConversationService {
   }
   // Adiciona participante
   async addParticipant(conversationId: string, userId: string): Promise<void> {
-    const conversation = (await Conversation.findByPk(
-      conversationId
-    )) as Conversation;
-
-    if (!conversation) {
-      throw new Error("Conversa não encontrada");
-    }
+    const conversation = await Conversation.findByPk(conversationId);
+    if (!conversation) throw new Error("Conversa não encontrada");
 
     const user = await User.findByPk(userId);
+    if (!user) throw new Error("Usuário não encontrado");
 
-    if (!user) {
-      throw new Error("Usuário não encontrado");
-    }
-
-    await conversation.addParticipant(user); // agora o TS reconhece ✅
+    await conversation.addParticipant(user);
   }
 
   // Remove participante
@@ -92,6 +85,19 @@ export class ConversationService {
     conversationId: string,
     userId: string
   ): Promise<void> {
-    // lógica
+    const conversation = await Conversation.findByPk(conversationId);
+    if (!conversation) throw new Error("Conversa não encontrada");
+
+    // Verifica se o usuário existe
+    const user = await User.findByPk(userId);
+    if (!user) throw new Error("Usuário não encontrado");
+
+    // Remove o vínculo na tabela intermediária
+    await ConversationParticipants.destroy({
+      where: {
+        conversationId,
+        userId,
+      },
+    });
   }
 }
