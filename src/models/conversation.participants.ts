@@ -1,8 +1,5 @@
-// src/models/ConversationParticipants.ts
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
-import User from "./user.model";
-import Conversation from "../models/conversation.model";
 
 class ConversationParticipants extends Model {
   public id!: string;
@@ -34,18 +31,5 @@ ConversationParticipants.init(
     timestamps: true,
   }
 );
-
-// Relações
-User.belongsToMany(Conversation, {
-  through: ConversationParticipants,
-  as: "conversations",
-  foreignKey: "userId",
-});
-
-Conversation.belongsToMany(User, {
-  through: ConversationParticipants,
-  as: "participants",
-  foreignKey: "conversationId",
-});
 
 export default ConversationParticipants;

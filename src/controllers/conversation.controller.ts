@@ -16,8 +16,6 @@ export class ConversationController {
     participantIds: string[]
   ): Promise<IConversationResponse> {
     try {
-      console.log(data)
-      console.log(participantIds)
       return await this.conversationService.createConversation(
         data,
         participantIds
@@ -27,19 +25,29 @@ export class ConversationController {
     }
   }
 
-  async getByUser(userId: string): Promise<IConversationResponse[]>{
+  async getConversation(userId: string): Promise<IConversationResponse[]> {
     try {
-      return await this.conversationService.getConversationsByUser(userId)
+      return await this.conversationService.getConversationsByUser(userId);
     } catch (error: any) {
-      throw new Error("Erro ao buscar conversas desse usuário")
+      throw new Error(`Erro ao buscar conversa: ${error.message}`);
     }
   }
 
-  async getByConversationId( conversationId: string): Promise<IConversationResponse>{
+  async getConversationById(
+    conversationId: string
+  ): Promise<IConversationResponse> {
     try {
-      return await this.conversationService.getConversationById(conversationId)
+      return await this.conversationService.getConversationById(conversationId);
     } catch (error: any) {
-       throw new Error("Erro ao buscar a conversa desse usuário")
+      throw new Error(`Erro ao buscar conversa: ${error.message}`);
     }
   }
+async addParticipant(conversationId: string, userId: string): Promise<void> {
+  try {
+    return await this.conversationService.addParticipant(conversationId, userId);
+  } catch (error: any) {
+    throw new Error(`Erro ao adicionar participante: ${error.message}`);
+  }
+}
+
 }

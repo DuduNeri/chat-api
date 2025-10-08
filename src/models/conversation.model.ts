@@ -1,16 +1,24 @@
-// src/models/Conversation.ts
-import { DataTypes, Model } from "sequelize";
+import {
+  DataTypes,
+  Model,
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyGetAssociationsMixin,
+} from "sequelize";
 import { sequelize } from "../config/db";
 import User from "./user.model";
 
 class Conversation extends Model {
   public id!: string;
-  public title!: string | null; // nome opcional da conversa/grupo
-  public isGroup!: boolean; // conversa privada ou grupo
-  public ownerId!: string; // usuário que criou a conversa
+  public title!: string | null;
+  public isGroup!: boolean;
+  public ownerId!: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  // 💡 Aqui você declara os mixins para o TS entender
+  public addParticipant!: BelongsToManyAddAssociationMixin<User, string>;
+  public getParticipants!: BelongsToManyGetAssociationsMixin<User>;
 }
 
 Conversation.init(
@@ -40,7 +48,20 @@ Conversation.init(
   }
 );
 
-// Relacionamento opcional com o dono da conversa
+// Dono da conversa
 Conversation.belongsTo(User, { foreignKey: "ownerId", as: "owner" });
+
+// Associação N:N — participantes da conversa
+Conversation.belongsToMany(User, {
+  through: "conversation_participants",
+  as: "participants",
+  foreignKey: "conversationId",
+});
+
+User.belongsToMany(Conversation, {
+  through: "conversation_participants",
+  as: "conversations",
+  foreignKey: "userId",
+});
 
 export default Conversation;

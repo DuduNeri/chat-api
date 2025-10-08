@@ -69,7 +69,23 @@ export class ConversationService {
     return conversation.toJSON() as IConversation;
   }
   // Adiciona participante
-  async addParticipant(conversationId: string, userId: string): Promise<void> {}
+  async addParticipant(conversationId: string, userId: string): Promise<void> {
+    const conversation = (await Conversation.findByPk(
+      conversationId
+    )) as Conversation;
+
+    if (!conversation) {
+      throw new Error("Conversa não encontrada");
+    }
+
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      throw new Error("Usuário não encontrado");
+    }
+
+    await conversation.addParticipant(user); // agora o TS reconhece ✅
+  }
 
   // Remove participante
   async removeParticipant(
