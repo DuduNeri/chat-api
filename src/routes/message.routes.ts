@@ -4,6 +4,8 @@ import { MessageController } from "../controllers/message.controller";
 const messageRouter = Router()
 const messageController = new MessageController()
 
-messageController.post("/message")
+messageRouter.post("/message", async (req: Request, res: Response) => {
+
+})
 
 export default messageRouter;
