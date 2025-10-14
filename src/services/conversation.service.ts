@@ -5,9 +5,13 @@ import {
   IConversation,
   IConversationResponse,
 } from "../interfaces/conversation.interface";
+import { error } from "console";
 
 export class ConversationService {
-  async createConversation(data: IConversation, participantId: string[]): Promise<IConversationResponse> {
+  async createConversation(
+    data: IConversation,
+    participantId: string[]
+  ): Promise<IConversationResponse> {
     const conversation = await Conversation.create({
       ownerId: data.ownerId,
       title: data.title || null,
@@ -66,7 +70,34 @@ export class ConversationService {
     return conversation.toJSON() as IConversation;
   }
   // Adiciona participante
-  async addParticipant(conversationId: string, userId: string): Promise<void> {}
+  async addParticipant(conversationId: string, userId: string): Promise<void> {
+    try {
+      const conversation = await Conversation.findByPk(conversationId);
+      if (!conversation) throw error("Essa conversa não existe");
+
+      const user = await User.findByPk(userId);
+      if (!user) {
+        throw new Error("Usuário não encontrado");
+      }
+
+      const alreadyExists = await ConversationParticipants.findOne({
+        where: { conversationId, userId },
+      });
+
+      if (alreadyExists)
+        throw error("Usuário já é participante desta conversa");
+
+      await ConversationParticipants.create({
+        conversationId,
+        userId,
+      });
+      console.log(
+        `✅ Usuário ${userId} adicionado à conversa ${conversationId}`
+      );
+    } catch (error) {
+      
+    }
+  }
 
   // Remove participante
   async removeParticipant(
