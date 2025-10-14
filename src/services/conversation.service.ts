@@ -7,18 +7,15 @@ import {
 } from "../interfaces/conversation.interface";
 
 export class ConversationService {
-  async createConversation(
-    data: IConversation,
-    participantIds: string[]
-  ): Promise<IConversationResponse> {
+  async createConversation(data: IConversation, participantId: string[]): Promise<IConversationResponse> {
     const conversation = await Conversation.create({
       ownerId: data.ownerId,
       title: data.title || null,
-      isGroup: participantIds.length > 1,
+      isGroup: participantId.length > 1,
     });
 
     await ConversationParticipants.bulkCreate(
-      participantIds.map((userId) => ({
+      participantId.map((userId) => ({
         conversationId: conversation.id,
         userId,
       }))

@@ -6,10 +6,10 @@ const conversationController = new ConversationController();
 
 conversationRouter.post("/sala", async (req: Request, res: Response) => {
   try {
-    const { title, ownerId, participantIds } = req.body;
+    const { title, ownerId, participantId } = req.body;
     const conversation = await conversationController.create(
       { ownerId, title }, // IConversation
-      participantIds // array de participantes
+      participantId // array de participantes
     );
     res.status(201).json(conversation);
   } catch (error: any) {

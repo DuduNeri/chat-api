@@ -13,14 +13,14 @@ export class ConversationController {
 
   async create(
     data: IConversation,
-    participantIds: string[]
+    participantId: string[]
   ): Promise<IConversationResponse> {
     try {
       console.log(data)
-      console.log(participantIds)
+      console.log(participantId)
       return await this.conversationService.createConversation(
         data,
-        participantIds
+        participantId
       );
     } catch (error: any) {
       throw new Error(`Erro ao criar sala: ${error.message}`);
