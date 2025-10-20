@@ -54,7 +54,6 @@ export class ConversationService {
 
     return conversation.map((c) => c.toJSON() as IConversationResponse);
   }
-  // Busca uma conversa por ID
   async getConversationById(
     conversationId: string
   ): Promise<IConversationResponse> {
@@ -69,7 +68,6 @@ export class ConversationService {
 
     return conversation.toJSON() as IConversation;
   }
-  // Adiciona participante
   async addParticipant(conversationId: string, userId: string): Promise<void> {
     try {
       const conversation = await Conversation.findByPk(conversationId);
@@ -87,6 +85,14 @@ export class ConversationService {
       if (alreadyExists)
         throw error("Usuário já é participante desta conversa");
 
+      const participantCount = await ConversationParticipants.count({
+        where: { conversationId },
+      });
+
+      if (participantCount >= 50) {
+        throw new Error("Limite máximo de 50 participantes atingido");
+      }
+
       await ConversationParticipants.create({
         conversationId,
         userId,
@@ -94,8 +100,9 @@ export class ConversationService {
       console.log(
         `✅ Usuário ${userId} adicionado à conversa ${conversationId}`
       );
-    } catch (error) {
-      
+    } catch (error: any) {
+      console.error("Erro ao adicionar participante:", error.message);
+      throw new Error(`Erro ao adicionar participante: ${error.message}`);
     }
   }
 
@@ -104,6 +111,26 @@ export class ConversationService {
     conversationId: string,
     userId: string
   ): Promise<void> {
-    // lógica
+    const conversation = await Conversation.findByPk(conversationId);
+    if (!conversation) {
+      throw new Error("Conversa não encontrada");
+    }
+
+    // Verifica se o usuário existe
+    const user = await User.findByPk(userId);
+    if (!user) {
+      throw new Error("Usuário não encontrado");
+    }
+
+    // Tenta remover o participante da conversa
+    const participant = await ConversationParticipants.findOne({
+      where: { conversationId, userId },
+    });
+
+    if (!participant) {
+      throw new Error("Participante não encontrado na conversa");
+    }
+
+    await participant.destroy();
   }
 }
