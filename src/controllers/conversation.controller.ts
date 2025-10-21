@@ -31,7 +31,7 @@ export class ConversationController {
     try {
       return await this.conversationService.getConversationsByUser(userId)
     } catch (error: any) {
-      throw new Error("Erro ao buscar conversas desse usuário")
+      throw new Error(`Erro ao buscar conversa desse usuário: ${error.message}`)
     }
   }
 
@@ -39,7 +39,15 @@ export class ConversationController {
     try {
       return await this.conversationService.getConversationById(conversationId)
     } catch (error: any) {
-       throw new Error("Erro ao buscar a conversa desse usuário")
+       throw new Error(`Erro ao buscar conversa: ${error.message}`)
     }
+  }
+
+  async addParticipant( conversationId: string, userId: string ): Promise <void>{
+     try {
+      return await this.conversationService.addParticipant(conversationId, userId)
+     } catch (error: any) {
+      throw new Error(`Erro ao tentar adicionar participante: ${error.message}`)
+     }
   }
 }

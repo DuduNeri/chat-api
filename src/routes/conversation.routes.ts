@@ -45,4 +45,17 @@ conversationRouter.get(
   }
 );
 
+conversationRouter.post("/:userId", async (req: Request, res: Response) => {
+  try {
+    const { conversationId, userId } = req.params;
+    const dellParticipant = await conversationController.dell(
+      conversationId,
+      userId
+    );
+    res.status(200).json(dellParticipant);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 export default conversationRouter;
