@@ -37,6 +37,7 @@ export class ConversationController {
 
   async getByConversationId( conversationId: string): Promise<IConversationResponse>{
     try {
+   
       return await this.conversationService.getConversationById(conversationId)
     } catch (error: any) {
        throw new Error(`Erro ao buscar conversa: ${error.message}`)
@@ -48,6 +49,14 @@ export class ConversationController {
       return await this.conversationService.addParticipant(conversationId, userId)
      } catch (error: any) {
       throw new Error(`Erro ao tentar adicionar participante: ${error.message}`)
+     }
+  }
+
+  async removeParticipant( conversationId: string, userId: string): Promise<void> {
+     try {
+      return await this.conversationService.removeParticipant(conversationId, userId)
+     } catch (error: any) {
+      throw new Error(`Erro ao tentar remover participante: ${error.message}`)
      }
   }
 }

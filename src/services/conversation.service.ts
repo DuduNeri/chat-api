@@ -5,19 +5,22 @@ import {
   IConversation,
   IConversationResponse,
 } from "../interfaces/conversation.interface";
-import { error } from "console";
 
 export class ConversationService {
   async createConversation(
     data: IConversation,
     participantId: string[]
   ): Promise<IConversationResponse> {
+    // Cria a conversa
     const conversation = await Conversation.create({
       ownerId: data.ownerId,
       title: data.title || null,
       isGroup: participantId.length > 1,
     });
 
+    console.log(conversation);
+
+    // Cria os participantes na tabela intermediária
     await ConversationParticipants.bulkCreate(
       participantId.map((userId) => ({
         conversationId: conversation.id,
@@ -25,13 +28,21 @@ export class ConversationService {
       }))
     );
 
-    const result = await Conversation.findByPk(conversation.id, {
+    // Recarrega a conversa com os participantes
+    await conversation.reload({
       include: [
         { model: User, as: "participants", attributes: ["id", "name"] },
       ],
     });
 
-    return result!.toJSON() as IConversationResponse;
+    // Converte para JSON e garante que participants seja sempre um array
+    const conv = conversation.toJSON() as IConversationResponse;
+    conv.participants = (conv.participants ?? []).map((p) => ({
+      id: p.id,
+      name: p.name,
+    }));
+
+    return conv;
   }
 
   async getConversationsByUser(
@@ -48,12 +59,11 @@ export class ConversationService {
       ],
     });
 
-    if (!conversation || conversation.length === 0) {
+    if (!conversation.length)
       throw new Error("Nenhuma conversa encontrada para esse usuário");
-    }
-
     return conversation.map((c) => c.toJSON() as IConversationResponse);
   }
+
   async getConversationById(
     conversationId: string
   ): Promise<IConversationResponse> {
@@ -62,74 +72,48 @@ export class ConversationService {
         { model: User, as: "participants", attributes: ["id", "name"] },
       ],
     });
-    if (!conversation) {
-      throw new Error("Erro ao buscar conversa");
-    }
 
-    return conversation.toJSON() as IConversation;
+    if (!conversation) throw new Error("Conversa não encontrada");
+    return conversation.toJSON() as IConversationResponse;
   }
+
   async addParticipant(conversationId: string, userId: string): Promise<void> {
-    try {
-      const conversation = await Conversation.findByPk(conversationId);
-      if (!conversation) throw error("Essa conversa não existe");
+    const conversation = await Conversation.findByPk(conversationId);
+    if (!conversation) throw new Error("Essa conversa não existe");
 
-      const user = await User.findByPk(userId);
-      if (!user) {
-        throw new Error("Usuário não encontrado");
-      }
+    const user = await User.findByPk(userId);
+    if (!user) throw new Error("Usuário não encontrado");
 
-      const alreadyExists = await ConversationParticipants.findOne({
-        where: { conversationId, userId },
-      });
+    const alreadyExists = await ConversationParticipants.findOne({
+      where: { conversationId, userId },
+    });
+    if (alreadyExists)
+      throw new Error("Usuário já é participante desta conversa");
 
-      if (alreadyExists)
-        throw error("Usuário já é participante desta conversa");
+    const participantCount = await ConversationParticipants.count({
+      where: { conversationId },
+    });
+    if (participantCount >= 50)
+      throw new Error("Limite máximo de 50 participantes atingido");
 
-      const participantCount = await ConversationParticipants.count({
-        where: { conversationId },
-      });
-
-      if (participantCount >= 50) {
-        throw new Error("Limite máximo de 50 participantes atingido");
-      }
-
-      await ConversationParticipants.create({
-        conversationId,
-        userId,
-      });
-      console.log(
-        `✅ Usuário ${userId} adicionado à conversa ${conversationId}`
-      );
-    } catch (error: any) {
-      console.error("Erro ao adicionar participante:", error.message);
-      throw new Error(`Erro ao adicionar participante: ${error.message}`);
-    }
+    await ConversationParticipants.create({ conversationId, userId });
   }
 
-  // Remove participante
   async removeParticipant(
     conversationId: string,
     userId: string
   ): Promise<void> {
     const conversation = await Conversation.findByPk(conversationId);
-    if (!conversation) {
-      throw new Error("Conversa não encontrada");
-    }
+    if (!conversation) throw new Error("Conversa não encontrada");
 
-    // Verifica se o usuário existe
     const user = await User.findByPk(userId);
-    if (!user) {
-      throw new Error("Usuário não encontrado");
-    }
+    if (!user) throw new Error("Usuário não encontrado");
 
-    // Tenta remover o participante da conversa
     const participant = await ConversationParticipants.findOne({
       where: { conversationId, userId },
     });
-
-    if (!participant) {
+    if (!participant)
       throw new Error("Participante não encontrado na conversa");
-    }
 
     await participant.destroy();
   }

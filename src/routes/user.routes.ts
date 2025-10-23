@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import { UserController } from "../controllers/user.controller";
+import { z } from "zod";
 
 const router = Router();
 const userController = new UserController();
