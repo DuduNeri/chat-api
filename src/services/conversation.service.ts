@@ -74,7 +74,14 @@ export class ConversationService {
     });
 
     if (!conversation) throw new Error("Conversa não encontrada");
-    return conversation.toJSON() as IConversationResponse;
+    
+    const conv = conversation.toJSON() as IConversationResponse;
+    conv.participants = (conv.participants ?? []).map((p) => ({
+      id: p.id,
+      name: p.name,
+    }));
+
+    return conv;
   }
 
   async addParticipant(conversationId: string, userId: string): Promise<void> {
