@@ -4,19 +4,28 @@ import { MessageController } from "../controllers/message.controller";
 const messageRouter = Router();
 const messageController = new MessageController();
 
-messageRouter.post("/message", async (req: Request, res: Response) => {
+messageRouter.post("/", async (req: Request, res: Response) => {
   try {
     const { conversationId, senderId, content } = req.body;
-    const newmessage = await messageController.createMessage(
+
+    if (!conversationId || !senderId || !content) {
+      return res.status(400).json({ message: "Dados inválidos" });
+    }
+
+    const result = await messageController.createMessage(
       conversationId,
       senderId,
       content
     );
-    res.status(201).json(newmessage);
+
+    if (!result.success) {
+      return res.status(400).json({ message: result.error });
+    }
+
+    return res.status(201).json(result.message);
   } catch (error: any) {
-    res.status(400).json({
-      message: error.message,
-    });
+    console.error("Erro ao enviar mensagem:", error.message);
+    res.status(500).json({ message: "Erro interno do servidor" });
   }
 });
 

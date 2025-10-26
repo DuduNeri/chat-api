@@ -8,5 +8,12 @@ export interface IConversation {
 }
 
 export interface IConversationResponse extends IConversation {
-  participants?: { id: string; name: string }[];
+  participants?: { id: string; name: string }[]; // participantes
+  messages?: {
+    id: string;
+    content: string;
+    sender: { id: string; name: string };
+    createdAt: Date;
+  }[]; // mensagens da conversa
 }
+

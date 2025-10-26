@@ -1,6 +1,7 @@
 import Conversation from "../models/conversation.model";
 import ConversationParticipants from "../models/conversation.participants";
 import User from "../models/user.model";
+import Message from "../models/message.model";
 import {
   IConversation,
   IConversationResponse,
@@ -65,25 +66,40 @@ export class ConversationService {
   }
 
   async getConversationById(
-    conversationId: string
-  ): Promise<IConversationResponse> {
-    const conversation = await Conversation.findByPk(conversationId, {
-      include: [
-        { model: User, as: "participants", attributes: ["id", "name"] },
-      ],
-    });
+  conversationId: string
+): Promise<IConversationResponse> {
+  const conversation = await Conversation.findByPk(conversationId, {
+    include: [
+      { model: User, as: "participants", attributes: ["id", "name"] },
+      {
+        model: Message,
+        as: "messages",
+        include: [
+          { model: User, as: "sender", attributes: ["id", "name"] }
+        ],
+        order: [["createdAt", "ASC"]], // opcional, para mensagens na ordem cronológica
+      },
+    ],
+  });
 
-    if (!conversation) throw new Error("Conversa não encontrada");
-    
-    const conv = conversation.toJSON() as IConversationResponse;
-    conv.participants = (conv.participants ?? []).map((p) => ({
-      id: p.id,
-      name: p.name,
-    }));
+  if (!conversation) throw new Error("Conversa não encontrada");
 
-    return conv;
-  }
+  const conv = conversation.toJSON() as IConversationResponse;
 
+  conv.participants = (conv.participants ?? []).map((p) => ({
+    id: p.id,
+    name: p.name,
+  }));
+
+  conv.messages = (conv.messages ?? []).map((m) => ({
+    id: m.id,
+    content: m.content,
+    sender: { id: m.sender.id, name: m.sender.name },
+    createdAt: m.createdAt,
+  }));
+
+  return conv;
+}
   async addParticipant(conversationId: string, userId: string): Promise<void> {
     const conversation = await Conversation.findByPk(conversationId);
     if (!conversation) throw new Error("Essa conversa não existe");

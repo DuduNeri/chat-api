@@ -1,21 +1,32 @@
 import Message from "../models/message.model";
-import Conversation from "../models/conversation.model";
-import ConversationParticipants from "../models/conversation.participants";
 import User from "../models/user.model";
+import Conversation from "../models/conversation.model";
 
 export class MessageService {
   async create(conversationId: string, senderId: string, content: string) {
-    if (!content) throw new Error("Conteúdo da mensagem é obrigatório");
+    if (!conversationId) throw new Error("ID da conversa é obrigatório");
+    if (!senderId) throw new Error("ID do remetente é obrigatório");
+    if (!content || !content.trim())
+      throw new Error("Conteúdo da mensagem é obrigatório");
+
+    const user = await User.findByPk(senderId);
+    if (!user) throw new Error("Usuário não encontrado");
+
+    const conversation = await Conversation.findByPk(conversationId);
+    if (!conversation) throw new Error("Conversa não encontrada");
 
     const message = await Message.create({
       conversationId,
       senderId,
       content,
     });
-    return await Message.findByPk(message.id, {
+
+    await message.reload({
       include: [
         { model: User, as: "sender", attributes: ["id", "name", "email"] },
       ],
     });
+
+    return message;
   }
 }
