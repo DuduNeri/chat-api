@@ -13,7 +13,7 @@ export class UserController {
   }
   async create(data: ICreateUser): Promise<IUserResponse> {
     try {
-      return await this.userService.CreateUser(data);
+      return await this.userService.create(data);
     } catch (error: any) {
       throw new Error(`Erro ao criar usuário: ${error.message}`);
     }
@@ -21,7 +21,7 @@ export class UserController {
 
   async getById(id: string): Promise<IUserResponse> {
     try {
-      return await this.userService.GetUserById(id);
+      return await this.userService.getUserById(id);
     } catch (error: any) {
       throw new Error(`Erro ao buscar usuário com id ${id}: ${error.message}`);
     }
@@ -29,7 +29,7 @@ export class UserController {
 
   async delete(id: string): Promise<void> {
     try {
-      await this.userService.DeleteUserById(id);
+      await this.userService.deleteUserById(id);
     } catch (error: any) {
       throw new Error(`Erro ao deletar usuário com id ${id}: ${error.message}`);
     }
@@ -37,7 +37,7 @@ export class UserController {
 
   async getAll(): Promise<IUserResponse[]> {
     try {
-      return await this.userService.GetAllUsers();
+      return await this.userService.getAllUsers();
     } catch (error: any) {
       throw new Error(`Erro ao buscar todos os usuários: ${error.message}`);
     }
@@ -45,7 +45,7 @@ export class UserController {
 
   async update(id: string, data: Partial<IUser>): Promise<IUserResponse> {
     try {
-      return await this.userService.UpdateUser(id, data);
+      return await this.userService.updateUser(id, data);
     } catch (error: any) {
       throw new Error(
         `Erro ao atualizar usuário com id ${id}: ${error.message}`

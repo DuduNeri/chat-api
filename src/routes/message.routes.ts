@@ -1,10 +1,11 @@
 import { Router, Request, Response } from "express";
 import { MessageController } from "../controllers/message.controller";
+import { authMiddleware } from "../middlewares/auth.middleware";
 
 const messageRouter = Router();
 const messageController = new MessageController();
 
-messageRouter.post("/", async (req: Request, res: Response) => {
+messageRouter.post("/", authMiddleware, async (req: Request, res: Response) => {
   try {
     const { conversationId, senderId, content } = req.body;
 

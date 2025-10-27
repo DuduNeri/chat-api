@@ -7,7 +7,7 @@ import {
 } from "../interfaces/user.interface";
 
 export class UserService {
-  async CreateUser(data: ICreateUser): Promise<IUserResponse> {
+  async create(data: ICreateUser): Promise<IUserResponse> {
     if (!data.name || !data.email || !data.password) {
       throw new Error("Todos os campos são obrigatórios");
     }
@@ -27,7 +27,7 @@ export class UserService {
     return safeUser as IUserResponse;
   }
 
-  async GetUserById(id: string): Promise<IUserResponse> {
+  async getUserById(id: string): Promise<IUserResponse> {
     const user = await User.findByPk(id, {
       attributes: { exclude: [`password`] },
     });
@@ -37,7 +37,7 @@ export class UserService {
     return user.toJSON() as IUserResponse;
   }
 
-  async GetAllUsers(): Promise<IUserResponse[]> {
+  async getAllUsers(): Promise<IUserResponse[]> {
     const users = await User.findAll({
       attributes: { exclude: [`password`] },
     });
@@ -45,7 +45,7 @@ export class UserService {
     return users.map((user) => user.toJSON() as IUserResponse);
   }
 
-  async DeleteUserById(id: string): Promise<{ message: string }> {
+  async deleteUserById(id: string): Promise<{ message: string }> {
     const user = await User.findByPk(id);
 
     if (!user) {
@@ -56,7 +56,7 @@ export class UserService {
     return { message: "Usuário deletado com sucesso" };
   }
 
-  async UpdateUser(id: string, data: Partial<IUser>): Promise<IUserResponse> {
+  async updateUser(id: string, data: Partial<IUser>): Promise<IUserResponse> {
     const user = await User.findByPk(id);
     if (!user) {
       throw new Error("Usuário não encontrado");

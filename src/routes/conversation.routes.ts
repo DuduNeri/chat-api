@@ -1,6 +1,5 @@
 import { Router, Response, Request } from "express";
 import { ConversationController } from "../controllers/conversation.controller";
-import { z } from "zod"
 
 const conversationRouter = Router();
 const conversationController = new ConversationController();

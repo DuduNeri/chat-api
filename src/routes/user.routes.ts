@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { UserController } from "../controllers/user.controller";
-import { z } from "zod";
+import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router = Router();
 const userController = new UserController();
@@ -49,7 +49,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/:id", authMiddleware, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const data = req.body;
