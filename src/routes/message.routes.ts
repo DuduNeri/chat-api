@@ -30,4 +30,22 @@ messageRouter.post("/", authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
+messageRouter.delete("/:messageId", authMiddleware, async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    const userId = (req as any).user.id; 
+
+    const result = await messageController.delete(messageId, userId);
+
+    if (!result.success) {
+      return res.status(400).json({ message: result.error });
+    }
+
+    return res.status(200).json({ message: result.message });
+  } catch (error: any) {
+    console.error("Erro ao deletar mensagem:", error.message);
+    res.status(500).json({ message: "Erro interno do servidor" });
+  }
+});
+
 export default messageRouter;

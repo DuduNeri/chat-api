@@ -12,13 +12,11 @@ export class ConversationService {
     data: IConversation,
     participantId: string[]
   ): Promise<IConversationResponse> {
-    // Cria a conversa
     const conversation = await Conversation.create({
       ownerId: data.ownerId,
       title: data.title || null,
       isGroup: participantId.length > 1,
     });
-    // Cria os participantes na tabela intermediária
     await ConversationParticipants.bulkCreate(
       participantId.map((userId) => ({
         conversationId: conversation.id,
@@ -26,14 +24,12 @@ export class ConversationService {
       }))
     );
 
-    // Recarrega a conversa com os participantes
     await conversation.reload({
       include: [
         { model: User, as: "participants", attributes: ["id", "name"] },
       ],
     });
 
-    // Converte para JSON e garante que participants seja sempre um array
     const conv = conversation.toJSON() as IConversationResponse;
     conv.participants = (conv.participants ?? []).map((p) => ({
       id: p.id,
@@ -72,9 +68,9 @@ export class ConversationService {
           model: Message,
           as: "messages",
           include: [{ model: User, as: "sender", attributes: ["id", "name"] }],
-          order: [["createdAt", "ASC"]], // opcional, para mensagens na ordem cronológica
         },
       ],
+      order: [[{ model: Message, as: "messages" }, "createdAt", "ASC"]],
     });
 
     if (!conversation) throw new Error("Conversa não encontrada");

@@ -24,4 +24,17 @@ export class MessageController {
       return { success: false, error: "Erro ao enviar mensagem" };
     }
   }
+
+  async delete(messageId: string, userId: string) {
+    try {
+      const message = await this.messageService.deleteMessage(
+        messageId,
+        userId
+      );
+      return { success: true, message };
+    } catch (error: any) {
+      console.error("Erro ao tentar deletar mensagem:", error.message);
+      return { success: false, error: error.message };
+    }
+  }
 }

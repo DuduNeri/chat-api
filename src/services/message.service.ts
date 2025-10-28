@@ -1,6 +1,8 @@
 import Message from "../models/message.model";
 import User from "../models/user.model";
 import Conversation from "../models/conversation.model";
+import tr from "zod/v4/locales/tr.js";
+import { error } from "console";
 
 export class MessageService {
   async create(conversationId: string, senderId: string, content: string) {
@@ -28,5 +30,22 @@ export class MessageService {
     });
 
     return message;
+  }
+
+  async deleteMessage(messageId: string, userId: string) {
+    const message = await Message.findByPk(messageId);
+    console.log(message)
+
+    if (!message) {
+      throw new Error("Mensagem não encontrada");
+    }
+
+    if (message.senderId !== userId) {
+      throw new Error("Você não pode excluir essa mensagem");
+    }
+
+    await message.destroy();
+
+    return { messgae: "Mensagem deletada com sucesso" };
   }
 }
