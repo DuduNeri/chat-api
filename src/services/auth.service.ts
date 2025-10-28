@@ -19,7 +19,7 @@ export class AuthService {
     const token = jwt.sign(
       { id: user.id, email: user.email, name: user.name },
       process.env.JWT_SECRET as string,
-      { expiresIn: "1d" }
+      { expiresIn: "24h" }
     );
 
     // 4️⃣ Retorna token + dados do usuário (sem a senha)

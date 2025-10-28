@@ -26,7 +26,7 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", authMiddleware, async (req: Request, res: Response) => {
   try {
     const users = await userController.getAll();
     res.status(200).json(users);

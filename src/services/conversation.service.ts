@@ -18,9 +18,6 @@ export class ConversationService {
       title: data.title || null,
       isGroup: participantId.length > 1,
     });
-
-    console.log(conversation);
-
     // Cria os participantes na tabela intermediária
     await ConversationParticipants.bulkCreate(
       participantId.map((userId) => ({
@@ -66,40 +63,38 @@ export class ConversationService {
   }
 
   async getConversationById(
-  conversationId: string
-): Promise<IConversationResponse> {
-  const conversation = await Conversation.findByPk(conversationId, {
-    include: [
-      { model: User, as: "participants", attributes: ["id", "name"] },
-      {
-        model: Message,
-        as: "messages",
-        include: [
-          { model: User, as: "sender", attributes: ["id", "name"] }
-        ],
-        order: [["createdAt", "ASC"]], // opcional, para mensagens na ordem cronológica
-      },
-    ],
-  });
+    conversationId: string
+  ): Promise<IConversationResponse> {
+    const conversation = await Conversation.findByPk(conversationId, {
+      include: [
+        { model: User, as: "participants", attributes: ["id", "name"] },
+        {
+          model: Message,
+          as: "messages",
+          include: [{ model: User, as: "sender", attributes: ["id", "name"] }],
+          order: [["createdAt", "ASC"]], // opcional, para mensagens na ordem cronológica
+        },
+      ],
+    });
 
-  if (!conversation) throw new Error("Conversa não encontrada");
+    if (!conversation) throw new Error("Conversa não encontrada");
 
-  const conv = conversation.toJSON() as IConversationResponse;
+    const conv = conversation.toJSON() as IConversationResponse;
 
-  conv.participants = (conv.participants ?? []).map((p) => ({
-    id: p.id,
-    name: p.name,
-  }));
+    conv.participants = (conv.participants ?? []).map((p) => ({
+      id: p.id,
+      name: p.name,
+    }));
 
-  conv.messages = (conv.messages ?? []).map((m) => ({
-    id: m.id,
-    content: m.content,
-    sender: { id: m.sender.id, name: m.sender.name },
-    createdAt: m.createdAt,
-  }));
+    conv.messages = (conv.messages ?? []).map((m) => ({
+      id: m.id,
+      content: m.content,
+      sender: { id: m.sender.id, name: m.sender.name },
+      createdAt: m.createdAt,
+    }));
 
-  return conv;
-}
+    return conv;
+  }
   async addParticipant(conversationId: string, userId: string): Promise<void> {
     const conversation = await Conversation.findByPk(conversationId);
     if (!conversation) throw new Error("Essa conversa não existe");

@@ -16,8 +16,6 @@ export class ConversationController {
     participantId: string[]
   ): Promise<IConversationResponse> {
     try {
-      console.log(data)
-      console.log(participantId)
       return await this.conversationService.createConversation(
         data,
         participantId
