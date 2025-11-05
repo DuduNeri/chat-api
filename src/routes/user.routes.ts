@@ -5,7 +5,7 @@ import { authMiddleware } from "../middlewares/auth.middleware";
 const router = Router();
 const userController = new UserController();
 
-router.post("/users", async (req: Request, res: Response) => {
+router.post("/user", async (req: Request, res: Response) => {
   try {
     const user = await userController.create(req.body);
     res.status(201).json(user);

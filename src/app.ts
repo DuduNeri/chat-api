@@ -9,11 +9,11 @@ import { loginRouter } from "./routes/login.route";
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json()); 
 
 app.use("/api/users", userRoutes); 
 app.use("/api/conversation", conversationRouter); 
 app.use("/api/messages", messageRouter); 
-app.use("/api/users", loginRouter)
+app.use("/api", loginRouter)
 
 export default app;
