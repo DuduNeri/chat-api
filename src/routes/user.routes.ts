@@ -14,6 +14,23 @@ router.post("/user", async (req: Request, res: Response) => {
   }
 });
 
+// router.post("/search", authMiddleware, async (req: Request, res: Response) => {
+//   try {
+//     const { name } = req.body;
+
+//     if (!name) {
+//       return res.status(400).json({ message: "O campo 'name' é obrigatório" });
+//     }
+
+//     const user = await userController.getbyName(name);
+//     return res.status(200).json(user);
+
+//   } catch (error: any) {
+//     return res.status(400).json({ message: error.message });
+//   }
+// });
+
+
 router.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -26,7 +43,7 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/", authMiddleware, async (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
     const users = await userController.getAll();
     res.status(200).json(users);
@@ -36,6 +53,7 @@ router.get("/", authMiddleware, async (req: Request, res: Response) => {
     });
   }
 });
+
 
 router.delete("/:id", async (req: Request, res: Response) => {
   try {

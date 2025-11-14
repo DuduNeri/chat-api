@@ -14,12 +14,13 @@ const conversationController = new ConversationController();
  */
 conversationRouter.post(
   "/sala",
-  authMiddleware,
+  authMiddleware, 
   async (req: Request, res: Response) => {
     try {
-      const { title, ownerId, participantId } = req.body;
+      const { title, participantId } = req.body;
 
-      // Chama o Controller para criar a conversa + relacionamentos
+      const ownerId = (req as any).user.id;
+
       const conversation = await conversationController.create(
         { ownerId, title },
         participantId
@@ -46,7 +47,7 @@ conversationRouter.get(
   authMiddleware,
   async (req: Request, res: Response) => {
     try {
-      const { userId } = req.params;
+      const {  userId } = req.params;
 
       // Busca no controller todas as conversas do usuário
       const conversations = await conversationController.getByUser(userId);

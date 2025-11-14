@@ -6,6 +6,7 @@ import {
   IConversation,
   IConversationResponse,
 } from "../interfaces/conversation.interface";
+import { Op } from "sequelize";
 
 export class ConversationService {
   async createConversation(
@@ -42,20 +43,11 @@ export class ConversationService {
   async getConversationsByUser(
     userId: string
   ): Promise<IConversationResponse[]> {
-    const conversation = await Conversation.findAll({
-      include: [
-        {
-          model: User,
-          as: "participants",
-          where: { id: userId },
-          attributes: ["id", "name"],
-        },
-      ],
+    const conversations = await Conversation.findAll({
+      where: { ownerId: userId }, 
     });
 
-    if (!conversation.length)
-      throw new Error("Nenhuma conversa encontrada para esse usuário");
-    return conversation.map((c) => c.toJSON() as IConversationResponse);
+    return conversations.map((c) => c.toJSON() as IConversationResponse);
   }
 
   async getConversationById(

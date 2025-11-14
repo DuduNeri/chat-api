@@ -5,6 +5,7 @@ import {
   type IUserResponse,
   type IUser,
 } from "../interfaces/user.interface";
+import { Op } from "sequelize";
 
 export class UserService {
   async create(data: ICreateUser): Promise<IUserResponse> {
@@ -44,6 +45,19 @@ export class UserService {
 
     return users.map((user) => user.toJSON() as IUserResponse);
   }
+
+  // async getByName(name: string): Promise<IUserResponse> {
+  //   const user = await User.findOne({
+  //     where: { name },
+  //     attributes: { exclude: ["password", "updatedAt", "createdAt"] },
+  //   });
+
+  //   if (!user) {
+  //     throw new Error("Usuário não encontrado");
+  //   }
+
+  //   return user;
+  // }
 
   async deleteUserById(id: string): Promise<{ message: string }> {
     const user = await User.findByPk(id);

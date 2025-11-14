@@ -27,6 +27,16 @@ export class UserController {
     }
   }
 
+  // async getbyName(name: string): Promise<IUserResponse> {
+  //   try {
+  //     return await this.userService.getByName(name);
+  //   } catch (error: any) {
+  //     throw new Error(
+  //       `Erro ao buscar usuário pelo nome ${name}: ${error.message}`
+  //     );
+  //   }
+  // }
+
   async delete(id: string): Promise<void> {
     try {
       await this.userService.deleteUserById(id);
