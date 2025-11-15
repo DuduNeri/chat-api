@@ -1,6 +1,6 @@
 export interface IConversation {
   id?: string;
-  title?: string | null;
+  title: string | null;
   isGroup?: boolean;
   ownerId: string;
   createdAt?: Date;

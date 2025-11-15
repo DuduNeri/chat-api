@@ -46,18 +46,18 @@ export class UserService {
     return users.map((user) => user.toJSON() as IUserResponse);
   }
 
-  // async getByName(name: string): Promise<IUserResponse> {
-  //   const user = await User.findOne({
-  //     where: { name },
-  //     attributes: { exclude: ["password", "updatedAt", "createdAt"] },
-  //   });
+  async getByName(name: string): Promise<IUserResponse> {
+    const user = await User.findOne({
+      where: { name },
+      attributes: { exclude: ["password", "updatedAt", "createdAt"] },
+    });
 
-  //   if (!user) {
-  //     throw new Error("Usuário não encontrado");
-  //   }
+    if (!user) {
+      throw new Error("Usuário não encontrado");
+    }
 
-  //   return user;
-  // }
+    return user;
+   }
 
   async deleteUserById(id: string): Promise<{ message: string }> {
     const user = await User.findByPk(id);
