@@ -7,6 +7,7 @@ import {
   IConversationResponse,
 } from "../interfaces/conversation.interface";
 import { Op } from "sequelize";
+import { error } from "console";
 
 export class ConversationService {
   async createConversation(
@@ -44,7 +45,7 @@ export class ConversationService {
     userId: string
   ): Promise<IConversationResponse[]> {
     const conversations = await Conversation.findAll({
-      where: { ownerId: userId }, 
+      where: { ownerId: userId },
     });
 
     return conversations.map((c) => c.toJSON() as IConversationResponse);
@@ -122,5 +123,25 @@ export class ConversationService {
       throw new Error("Participante não encontrado na conversa");
 
     await participant.destroy();
+  }
+
+  async deleteChat(conversationId: string, userId: string) {
+    const conversation = await Conversation.findByPk(conversationId);
+
+    if (!conversation) {
+      return { ok: false, message: "Conversa não encontrada" };
+    }
+
+    // Verifica se o usuário é dono da conversa
+    if (conversation.ownerId !== userId) {
+      return {
+        ok: false,
+        message: "Você não tem permissão para excluir esta conversa",
+      };
+    }
+
+    await conversation.destroy();
+
+    return { ok: true, message: "Conversa excluída com sucesso" };
   }
 }

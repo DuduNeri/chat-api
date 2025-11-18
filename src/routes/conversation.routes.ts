@@ -14,7 +14,7 @@ const conversationController = new ConversationController();
  */
 conversationRouter.post(
   "/sala",
-  authMiddleware, 
+  authMiddleware,
   async (req: Request, res: Response) => {
     try {
       const { title, participantId } = req.body;
@@ -47,9 +47,8 @@ conversationRouter.get(
   authMiddleware,
   async (req: Request, res: Response) => {
     try {
-      const {  userId } = req.params;
+      const { userId } = req.params;
 
-      // Busca no controller todas as conversas do usuário
       const conversations = await conversationController.getByUser(userId);
 
       res.status(200).json(conversations);
@@ -72,7 +71,6 @@ conversationRouter.get(
     try {
       const { conversationId } = req.params;
 
-      // Busca conversa completa com mensagens e participantes
       const conversation = await conversationController.getByConversationId(
         conversationId
       );
@@ -98,7 +96,6 @@ conversationRouter.post(
       const { conversationId } = req.params;
       const { userId } = req.body;
 
-      // Controller adiciona o usuário como participante da conversa
       await conversationController.addParticipant(conversationId, userId);
 
       res.status(200).json({ message: "Participante adicionado com sucesso" });
@@ -120,13 +117,29 @@ conversationRouter.delete(
     try {
       const { conversationId, userId } = req.params;
 
-      // Remove o participante usando o controller
       await conversationController.removeParticipant(conversationId, userId);
 
       res.status(200).json({ message: "Participante removido com sucesso" });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
+  }
+);
+
+conversationRouter.delete(
+  "/:conversationId",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    try {
+      const { conversationId } = req.params;
+      const userId = (req as any).user.id;
+      const result = await conversationController.delete(
+        conversationId,
+        userId
+      );
+
+      res.status(200).json(result);
+    } catch (error) {}
   }
 );
 

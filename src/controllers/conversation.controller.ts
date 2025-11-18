@@ -1,3 +1,4 @@
+import { error } from "console";
 import type {
   IConversation,
   IConversationResponse,
@@ -25,36 +26,58 @@ export class ConversationController {
     }
   }
 
-  async getByUser(userId: string): Promise<IConversationResponse[]>{
+  async getByUser(userId: string): Promise<IConversationResponse[]> {
     try {
-      return await this.conversationService.getConversationsByUser(userId)
+      return await this.conversationService.getConversationsByUser(userId);
     } catch (error: any) {
-      throw new Error(`Erro ao buscar conversa desse usuário: ${error.message}`)
+      throw new Error(
+        `Erro ao buscar conversa desse usuário: ${error.message}`
+      );
     }
   }
 
-  async getByConversationId( conversationId: string): Promise<IConversationResponse>{
+  async getByConversationId(
+    conversationId: string
+  ): Promise<IConversationResponse> {
     try {
-   
-      return await this.conversationService.getConversationById(conversationId)
+      return await this.conversationService.getConversationById(conversationId);
     } catch (error: any) {
-       throw new Error(`Erro ao buscar conversa: ${error.message}`)
+      throw new Error(`Erro ao buscar conversa: ${error.message}`);
     }
   }
 
-  async addParticipant( conversationId: string, userId: string ): Promise <void>{
-     try {
-      return await this.conversationService.addParticipant(conversationId, userId)
-     } catch (error: any) {
-      throw new Error(`Erro ao tentar adicionar participante: ${error.message}`)
-     }
+  async addParticipant(conversationId: string, userId: string): Promise<void> {
+    try {
+      return await this.conversationService.addParticipant(
+        conversationId,
+        userId
+      );
+    } catch (error: any) {
+      throw new Error(
+        `Erro ao tentar adicionar participante: ${error.message}`
+      );
+    }
   }
 
-  async removeParticipant( conversationId: string, userId: string): Promise<void> {
-     try {
-      return await this.conversationService.removeParticipant(conversationId, userId)
-     } catch (error: any) {
-      throw new Error(`Erro ao tentar remover participante: ${error.message}`)
-     }
+  async removeParticipant(
+    conversationId: string,
+    userId: string
+  ): Promise<void> {
+    try {
+      return await this.conversationService.removeParticipant(
+        conversationId,
+        userId
+      );
+    } catch (error: any) {
+      throw new Error(`Erro ao tentar remover participante: ${error.message}`);
+    }
+  }
+
+  async delete(conversationId: string, userId: string) {
+    try {
+      return await this.conversationService.deleteChat(conversationId, userId);
+    } catch (error: any) {
+       throw new Error(`Erro ao excluir chat: ${error.message}`);
+    }
   }
 }
