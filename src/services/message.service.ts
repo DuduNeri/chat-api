@@ -32,6 +32,7 @@ export class MessageService {
     return message;
   }
 
+
   async deleteMessage(messageId: string, userId: string) {
     const message = await Message.findByPk(messageId);
     console.log(message)

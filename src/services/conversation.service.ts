@@ -126,22 +126,23 @@ export class ConversationService {
   }
 
   async deleteChat(conversationId: string, userId: string) {
-    const conversation = await Conversation.findByPk(conversationId);
+  const conversation = await Conversation.findByPk(conversationId);
 
-    if (!conversation) {
-      return { ok: false, message: "Conversa não encontrada" };
-    }
-
-    // Verifica se o usuário é dono da conversa
-    if (conversation.ownerId !== userId) {
-      return {
-        ok: false,
-        message: "Você não tem permissão para excluir esta conversa",
-      };
-    }
-
-    await conversation.destroy();
-
-    return { ok: true, message: "Conversa excluída com sucesso" };
+  if (!conversation) {
+    return { ok: false, message: "Conversa não encontrada" };
   }
+
+  if (conversation.ownerId !== userId) {
+    return { ok: false, message: "Sem permissão" };
+  }
+
+  await Message.destroy({
+    where: { conversationId }
+  });
+
+  await conversation.destroy();
+
+  return { ok: true, message: "Conversa excluída com sucesso" };
+}
+
 }
