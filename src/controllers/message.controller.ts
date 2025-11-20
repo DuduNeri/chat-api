@@ -1,3 +1,4 @@
+import { success } from "zod";
 import { MessageService } from "../services/message.service";
 
 export class MessageController {
@@ -37,4 +38,15 @@ export class MessageController {
       return { success: false, error: error.message };
     }
   }
+
+async getMessagesBy(conversationId: string) {
+  try {
+    const messages = await this.messageService.getByConversation(conversationId);
+    return { success: true, messages };
+  } catch (error: any) {
+    console.error("Erro ao buscar mensagens:", error.message);
+    return { success: false, error: "Erro ao buscar mensagens" };
+  }
+}
+
 }

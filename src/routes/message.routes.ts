@@ -30,10 +30,31 @@ messageRouter.post("/", authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
+messageRouter.get(
+  "/:conversationId",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    try {
+      const { conversationId } = req.params;
+
+      const result = await messageController.getMessagesBy(conversationId);
+
+      if (!result.success) {
+        return res.status(400).json({ message: result.error });
+      }
+
+      return res.status(200).json(result.messages);
+    } catch (error: any) {
+      console.error("Erro ao listar mensagens:", error.message);
+      res.status(500).json({ message: "Erro interno do servidor" });
+    }
+  }
+);
+
 messageRouter.delete("/:messageId", authMiddleware, async (req, res) => {
   try {
     const { messageId } = req.params;
-    const userId = (req as any).user.id; 
+    const userId = (req as any).user.id;
 
     const result = await messageController.delete(messageId, userId);
 

@@ -32,10 +32,21 @@ export class MessageService {
     return message;
   }
 
+  async getByConversation(conversationId: string) {
+    const messages = await Message.findAll({
+      where: { conversationId },
+      include: [
+        { model: User, as: "sender", attributes: ["id", "name", "email"] },
+      ],
+      order: [["createdAt", "ASC"]],
+    });
+
+    return messages;
+  }
 
   async deleteMessage(messageId: string, userId: string) {
     const message = await Message.findByPk(messageId);
-    console.log(message)
+    console.log(message);
 
     if (!message) {
       throw new Error("Mensagem não encontrada");
