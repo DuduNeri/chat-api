@@ -1,8 +1,7 @@
 import Message from "../models/message.model";
 import User from "../models/user.model";
 import Conversation from "../models/conversation.model";
-import tr from "zod/v4/locales/tr.js";
-import { error } from "console";
+
 
 export class MessageService {
   async create(conversationId: string, senderId: string, content: string) {

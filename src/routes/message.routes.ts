@@ -7,28 +7,32 @@ const messageController = new MessageController();
 
 messageRouter.post("/", authMiddleware, async (req: Request, res: Response) => {
   try {
-    const { conversationId, senderId, content } = req.body;
+    const { conversationId, content } = req.body;
 
-    if (!conversationId || !senderId || !content) {
-      return res.status(400).json({ message: "Dados inválidos" });
+    if (!req.user) {
+      return res.status(401).json({ success: false, message: "Usuário não autenticado" });
     }
 
-    const result = await messageController.createMessage(
-      conversationId,
-      senderId,
-      content
-    );
+    const senderId = req.user.id;
+
+    if (!conversationId || !content) {
+      return res.status(400).json({ success: false, message: "Dados inválidos" });
+    }
+
+    const result = await messageController.createMessage(conversationId, senderId, content);
 
     if (!result.success) {
-      return res.status(400).json({ message: result.error });
+      return res.status(400).json({ success: false, message: result.error });
     }
 
-    return res.status(201).json(result.message);
+    return res.status(201).json({ success: true, message: result.message });
   } catch (error: any) {
     console.error("Erro ao enviar mensagem:", error.message);
-    res.status(500).json({ message: "Erro interno do servidor" });
+    res.status(500).json({ success: false, message: "Erro interno do servidor" });
   }
 });
+
+
 
 messageRouter.get(
   "/:conversationId",

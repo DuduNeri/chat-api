@@ -1,5 +1,7 @@
 import app from "./app";
 import { sequelize } from "./config/db";
+import http from "http";
+import { initWebSocket } from "./ws/chatWebSocket";
 
 const PORT = process.env.PORT || 4000;
 
@@ -7,11 +9,15 @@ async function startServer() {
   try {
     await sequelize.authenticate();
     console.log("✅ Conectado ao banco com sucesso!");
-
     await sequelize.sync({ alter: true });
     console.log("✅ Tabelas sincronizadas!");
 
-    app.listen(PORT, () => {
+    const server = http.createServer(app);
+
+    // Inicializa WebSocket
+    initWebSocket(server);
+
+    server.listen(PORT, () => {
       console.log(`🚀 Servidor rodando na porta ${PORT}`);
     });
   } catch (error) {
